@@ -37,8 +37,8 @@ ruff check .
 
 ## Progress
 
-- [ ] Day 1 — Tensors, environments, and Git
-- [ ] Day 2 — Tokenization
+- [x] Day 1 — Tensors, environments, and Git
+- [x] Day 2 — Tokenization *(in progress)*
 - [ ] Day 3 — Neural networks and language modeling
 - [ ] Day 4 — Embeddings and context
 - [ ] Day 5 — Attention
@@ -49,4 +49,3 @@ ruff check .
 ## License
 
 MIT
-
