@@ -1,0 +1,17 @@
+{
+  "name": "LLM Pocket Lab",
+  "short_name": "Pocket Lab",
+  "description": "Interactive cards and quizzes for learning LLM engineering fundamentals.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
