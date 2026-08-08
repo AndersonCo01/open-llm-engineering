@@ -1,8 +1,10 @@
 # LLM Pocket Lab
 
 A mobile-first interactive companion for the Open LLM Engineering course. It
-contains 14 concept cards, immediate-feedback quizzes, bookmarks, saved progress,
-and installable iPhone Home Screen metadata.
+contains a searchable library of Python, tensor, tokenization, neural-network,
+transformer, training, inference, RAG, and agent concepts. Every term includes
+syntax, an example, an explanation, and an immediate-feedback quiz. The app also
+supports bookmarks, saved progress, and iPhone Home Screen installation.
 
 ## Run locally
 

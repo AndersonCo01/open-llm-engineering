@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { concepts } from "./data/concepts";
+import { useDeferredValue, useState } from "react";
+import { categories, concepts, type Category } from "./data/concepts";
 import { ArrowIcon, BookIcon, BookmarkIcon, ChartIcon, CheckIcon, FlaskIcon, QuizIcon } from "./components/Icons";
 
-type Tab = "learn" | "quiz" | "progress";
+type Tab = "learn" | "library" | "quiz" | "progress";
 type SavedState = { cardIndex: number; bookmarks: string[]; correct: number; answered: number };
 
 const STORAGE_KEY = "llm-pocket-lab-progress-v1";
@@ -70,12 +70,61 @@ function App() {
         {tab === "quiz" ? (
           <QuizView quizIndex={quizIndex} selected={selected} onSelect={selectAnswer} onNext={nextQuestion} />
         ) : null}
+        {tab === "library" ? (
+          <LibraryView onStudy={(index) => { setCardIndex(index); setTab("learn"); }} />
+        ) : null}
         {tab === "progress" ? (
           <ProgressView correct={correct} answered={answered} bookmarks={bookmarks} onStudy={(index) => { setCardIndex(index); setTab("learn"); }} />
         ) : null}
         <BottomNav active={tab} onChange={setTab} />
       </section>
     </main>
+  );
+}
+
+function LibraryView({ onStudy }: { onStudy: (index: number) => void }) {
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState<Category | "All">("All");
+  const deferredQuery = useDeferredValue(query.trim().toLowerCase());
+  const matches = concepts
+    .map((concept, index) => ({ concept, index }))
+    .filter(({ concept }) => {
+      const matchesCategory = category === "All" || concept.category === category;
+      const searchable = `${concept.title} ${concept.definition} ${concept.code}`.toLowerCase();
+      return matchesCategory && searchable.includes(deferredQuery);
+    });
+
+  return (
+    <div className="view library-view">
+      <header className="library-header">
+        <h1>Concept library</h1>
+        <p>Search the terminology and syntax used throughout the project.</p>
+      </header>
+      <div className="library-filters">
+        <label>
+          <span>Search terms</span>
+          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="attention, tensor, class" type="search" />
+        </label>
+        <label>
+          <span>Category</span>
+          <select value={category} onChange={(event) => setCategory(event.target.value as Category | "All")}>
+            <option value="All">All categories</option>
+            {categories.map((item) => <option key={item} value={item}>{item}</option>)}
+          </select>
+        </label>
+      </div>
+      <div className="library-summary"><strong>{matches.length}</strong> of {concepts.length} terms</div>
+      {matches.length ? (
+        <div className="term-list">
+          {matches.map(({ concept, index }) => (
+            <button key={concept.id} onClick={() => onStudy(index)}>
+              <span><small>{concept.category}</small><strong>{concept.title}</strong><em>{concept.definition}</em></span>
+              <ArrowIcon size={20} />
+            </button>
+          ))}
+        </div>
+      ) : <div className="empty-state"><p>No terms match that search. Try another word or category.</p></div>}
+    </div>
   );
 }
 
@@ -161,6 +210,7 @@ function ProgressView({ correct, answered, bookmarks, onStudy }: ProgressProps) 
 function BottomNav({ active, onChange }: { active: Tab; onChange: (tab: Tab) => void }) {
   const items: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "learn", label: "Learn", icon: <BookIcon /> },
+    { id: "library", label: "Library", icon: <FlaskIcon /> },
     { id: "quiz", label: "Quiz", icon: <QuizIcon /> },
     { id: "progress", label: "Progress", icon: <ChartIcon /> },
   ];

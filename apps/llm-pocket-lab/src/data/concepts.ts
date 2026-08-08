@@ -1,7 +1,7 @@
 export type Concept = {
   id: string;
   title: string;
-  category: "Python" | "Tensors" | "Tokenization";
+  category: Category;
   definition: string;
   code: string;
   output: string;
@@ -12,7 +12,21 @@ export type Concept = {
   explanation: string;
 };
 
-export const concepts: Concept[] = [
+export type Category =
+  | "Python"
+  | "Engineering"
+  | "Tensors"
+  | "Tokenization"
+  | "Neural Networks"
+  | "Embeddings"
+  | "Attention"
+  | "Transformers"
+  | "Training"
+  | "Inference"
+  | "RAG"
+  | "Agents";
+
+const foundationConcepts: Concept[] = [
   {
     id: "sorted",
     title: "sorted()",
@@ -196,3 +210,378 @@ export const concepts: Concept[] = [
     explanation: "Decoding starts from an integer ID, so it needs the reverse ID-to-token mapping.",
   },
 ];
+
+const advancedConcepts: Concept[] = [
+  {
+    id: "list-comprehension", title: "List comprehension", category: "Python",
+    definition: "Builds a new list by transforming or filtering items in one expression.",
+    code: "[token.lower() for token in tokens]", output: '["hello", "llm"]',
+    steps: ["Reads each item from the iterable.", "Evaluates the expression for that item.", "Collects each result in a new list."],
+    question: "What does a list comprehension return?", options: ["A new list", "A trained model", "A Git branch"], answer: 0,
+    explanation: "A list comprehension is concise syntax for constructing a new Python list.",
+  },
+  {
+    id: "type-hints", title: "Type hints", category: "Python",
+    definition: "Describe the expected types of function inputs and outputs.",
+    code: "def encode(text: str) -> list[int]:", output: "input: str → output: list[int]",
+    steps: ["Annotates the parameter as text.", "Annotates the returned token IDs.", "Helps editors and static checkers catch mistakes."],
+    question: "Do Python type hints automatically enforce types at runtime?", options: ["Always", "No", "Only for tensors"], answer: 1,
+    explanation: "Hints document intent and support tools, but Python does not enforce them automatically.",
+  },
+  {
+    id: "class", title: "class", category: "Python",
+    definition: "Defines a reusable blueprint that combines data with behavior.",
+    code: "class CharacterTokenizer:\n    def encode(self, text): ...", output: "tokenizer object",
+    steps: ["The class defines the blueprint.", "An instance stores its own vocabulary.", "Methods such as encode operate on that instance."],
+    question: "What does self refer to inside an instance method?", options: ["The current object", "The Python module", "The test runner"], answer: 0,
+    explanation: "self gives the method access to the current instance and its stored state.",
+  },
+  {
+    id: "raise", title: "raise ValueError", category: "Python",
+    definition: "Stops invalid work and reports a clear input-related error.",
+    code: 'raise ValueError("Vector cannot be zero")', output: "ValueError with message",
+    steps: ["Checks an invalid condition.", "Raises a specific exception.", "Lets callers and tests handle the failure."],
+    question: "Why raise ValueError for an invalid shape?", options: ["To fail clearly and early", "To resize it silently", "To commit the file"], answer: 0,
+    explanation: "Early validation prevents confusing errors deeper inside numerical operations.",
+  },
+  {
+    id: "pytest", title: "pytest", category: "Engineering",
+    definition: "Runs automated tests that verify code behavior.",
+    code: "python -m pytest -v", output: "tests pass or fail",
+    steps: ["Discovers test files.", "Executes each test function.", "Reports failures with tracebacks."],
+    question: "What is a regression test?", options: ["A test preventing old bugs from returning", "A model checkpoint", "A token type"], answer: 0,
+    explanation: "Regression tests preserve known behavior as the project changes.",
+  },
+  {
+    id: "ruff", title: "ruff check", category: "Engineering",
+    definition: "Checks Python source for style problems and likely mistakes.",
+    code: "python -m ruff check .", output: "All checks passed!",
+    steps: ["Reads the project configuration.", "Analyzes source files without running them.", "Reports actionable rule violations."],
+    question: "Is linting the same as running tests?", options: ["Yes", "No", "Only in production"], answer: 1,
+    explanation: "Linting analyzes source patterns; tests execute behavior. Strong projects use both.",
+  },
+  {
+    id: "git-branch", title: "Git branch", category: "Engineering",
+    definition: "An independent line of development for a focused change.",
+    code: "git switch -c codex/day-03-language-model", output: "new working branch",
+    steps: ["Starts from a known commit.", "Keeps new work separate from main.", "Can later be reviewed and merged."],
+    question: "Why build a feature on a branch?", options: ["To isolate and review changes", "To tokenize text", "To calculate loss"], answer: 0,
+    explanation: "Branches make experimentation and code review safer without destabilizing main.",
+  },
+  {
+    id: "requires-grad", title: "requires_grad", category: "Tensors",
+    definition: "Tells PyTorch to track operations so it can calculate gradients.",
+    code: "weight = torch.tensor(2.0, requires_grad=True)", output: "gradient tracking enabled",
+    steps: ["Marks a learnable value.", "Records operations involving it.", "backward() computes its gradient."],
+    question: "Which tensors normally need requires_grad=True?", options: ["Learnable parameters", "Token strings", "Git commits"], answer: 0,
+    explanation: "Optimization needs gradients for parameters the model is allowed to update.",
+  },
+  {
+    id: "broadcasting", title: "Broadcasting", category: "Tensors",
+    definition: "Applies operations to compatible tensor shapes without manually copying data.",
+    code: "torch.ones(2, 3) + torch.tensor([1, 2, 3])", output: "shape: [2, 3]",
+    steps: ["Aligns dimensions from the right.", "Expands size-one or missing axes logically.", "Performs the elementwise operation."],
+    question: "Does broadcasting physically duplicate the smaller tensor first?", options: ["Usually no", "Always", "Only for strings"], answer: 0,
+    explanation: "Broadcasting behaves like expansion while avoiding unnecessary copies in typical operations.",
+  },
+  {
+    id: "device", title: "Tensor device", category: "Tensors",
+    definition: "The processor and memory where a tensor operation runs.",
+    code: 'tensor.to("mps")', output: "tensor on Apple GPU",
+    steps: ["Chooses CPU, CUDA, or MPS.", "Moves tensor data when necessary.", "Requires interacting tensors to share a device."],
+    question: "What is MPS used for on a Mac?", options: ["Apple GPU acceleration", "Token sorting", "Git hosting"], answer: 0,
+    explanation: "PyTorch's MPS backend can run supported tensor operations on Apple silicon GPUs.",
+  },
+  {
+    id: "dtype", title: "dtype", category: "Tensors",
+    definition: "The numeric data type used to store each tensor value.",
+    code: "tensor.dtype", output: "torch.float32",
+    steps: ["Controls numeric representation.", "Affects precision and memory.", "Must suit the operation being performed."],
+    question: "Which dtype is commonly used for token IDs?", options: ["Integer", "Boolean only", "Plain text"], answer: 0,
+    explanation: "Token IDs are integer vocabulary indices, while model activations are usually floating point.",
+  },
+  {
+    id: "bpe", title: "BPE", category: "Tokenization",
+    definition: "Byte Pair Encoding repeatedly merges frequent adjacent units into subword tokens.",
+    code: '"l" + "l" → "ll"', output: "learned subword vocabulary",
+    steps: ["Starts with small text units.", "Counts frequent adjacent pairs.", "Adds useful merged tokens iteratively."],
+    question: "Why use subwords instead of only characters?", options: ["Shorter sequences with reusable word pieces", "To remove all unknown text", "To calculate gradients"], answer: 0,
+    explanation: "Subwords balance vocabulary size, sequence length, and the ability to represent unfamiliar words.",
+  },
+  {
+    id: "special-tokens", title: "Special tokens", category: "Tokenization",
+    definition: "Reserved tokens that communicate structure or control behavior.",
+    code: "<BOS> prompt <EOS> <PAD>", output: "structured token sequence",
+    steps: ["BOS can mark the beginning.", "EOS can mark completion.", "PAD aligns different sequence lengths."],
+    question: "What does <EOS> commonly signal?", options: ["End of sequence", "Embedding size", "Optimizer step"], answer: 0,
+    explanation: "An end-of-sequence token teaches or signals when generated text should stop.",
+  },
+  {
+    id: "context-window", title: "Context window", category: "Tokenization",
+    definition: "The maximum number of tokens a model can consider in one sequence.",
+    code: "tokens[-context_length:]", output: "most recent context",
+    steps: ["Counts tokens rather than characters.", "Limits prompt plus generated content.", "Longer context requires more memory and computation."],
+    question: "Is a 1,000-character prompt always 1,000 tokens?", options: ["No", "Yes", "Only with attention"], answer: 0,
+    explanation: "Token count depends on the tokenizer and the text, so characters and tokens are not equivalent.",
+  },
+  {
+    id: "embedding", title: "Embedding", category: "Embeddings",
+    definition: "A learned dense vector representing a token or other discrete item.",
+    code: "embedding(token_ids)", output: "[batch, sequence, d_model]",
+    steps: ["Uses each token ID as a row index.", "Retrieves a learned vector.", "Supplies continuous values to the network."],
+    question: "Where does useful token representation live?", options: ["In learned embedding vectors", "In larger token IDs", "In filenames"], answer: 0,
+    explanation: "IDs only select rows; training shapes the embedding vectors into useful representations.",
+  },
+  {
+    id: "embedding-table", title: "nn.Embedding", category: "Embeddings",
+    definition: "A trainable lookup table mapping integer IDs to vectors.",
+    code: "nn.Embedding(vocab_size, d_model)", output: "vocab_size × d_model parameters",
+    steps: ["Creates one row per vocabulary item.", "Selects rows using token IDs.", "Updates selected representations through training."],
+    question: "What determines the number of embedding rows?", options: ["Vocabulary size", "Batch size", "Learning rate"], answer: 0,
+    explanation: "Every token ID needs a corresponding row in the embedding table.",
+  },
+  {
+    id: "parameters", title: "Parameters", category: "Neural Networks",
+    definition: "Learnable tensor values adjusted during training.",
+    code: "sum(p.numel() for p in model.parameters())", output: "parameter count",
+    steps: ["Weights begin with initial values.", "Gradients measure needed change.", "The optimizer updates them."],
+    question: "What makes a model learn?", options: ["Updating parameters from gradients", "Renaming tensors", "Sorting test files"], answer: 0,
+    explanation: "Learning is the repeated adjustment of parameters to reduce the training objective.",
+  },
+  {
+    id: "linear-layer", title: "nn.Linear", category: "Neural Networks",
+    definition: "Applies a learned affine transformation to input features.",
+    code: "nn.Linear(d_model, vocab_size)", output: "logits for every token",
+    steps: ["Multiplies input by a weight matrix.", "Adds a learned bias.", "Changes the final feature dimension."],
+    question: "What operation is central to a linear layer?", options: ["Matrix multiplication", "String sorting", "Git merging"], answer: 0,
+    explanation: "A linear layer computes xW + b using learned weights and bias.",
+  },
+  {
+    id: "activation", title: "Activation function", category: "Neural Networks",
+    definition: "A nonlinear transformation that lets networks learn complex relationships.",
+    code: "torch.nn.functional.gelu(x)", output: "nonlinear activations",
+    steps: ["Receives linear-layer outputs.", "Transforms each value nonlinearly.", "Allows stacked layers to model more than one linear map."],
+    question: "Why are nonlinear activations necessary?", options: ["They enable complex functions", "They assign token IDs", "They create branches"], answer: 0,
+    explanation: "Without nonlinearities, stacked linear layers collapse into one linear transformation.",
+  },
+  {
+    id: "forward", title: "forward()", category: "Neural Networks",
+    definition: "Defines how inputs flow through a PyTorch module to produce outputs.",
+    code: "logits = model(input_ids)", output: "model predictions",
+    steps: ["Receives input tensors.", "Applies the module's layers.", "Returns logits or another result."],
+    question: "Should you normally call model.forward(x) directly?", options: ["No, call model(x)", "Always", "Only for Git"], answer: 0,
+    explanation: "Calling model(x) preserves PyTorch hooks and invokes forward through the module interface.",
+  },
+  {
+    id: "logits", title: "Logits", category: "Inference",
+    definition: "Raw model scores before conversion into probabilities.",
+    code: "logits = model(input_ids)", output: "[..., vocab_size]",
+    steps: ["Produces one score per possible token.", "Scores may be any real number.", "Softmax converts them into probabilities."],
+    question: "Are logits already probabilities?", options: ["No", "Yes", "Only negative logits"], answer: 0,
+    explanation: "Logits are unnormalized scores; softmax normalizes them across candidate tokens.",
+  },
+  {
+    id: "softmax", title: "softmax()", category: "Inference",
+    definition: "Converts logits into nonnegative probabilities that sum to one.",
+    code: "torch.softmax(logits, dim=-1)", output: "token probabilities",
+    steps: ["Exponentiates relative scores stably.", "Normalizes across the selected axis.", "Preserves which logits rank highest."],
+    question: "Which axis should language-model softmax usually use?", options: ["The vocabulary axis", "The batch axis", "No axis"], answer: 0,
+    explanation: "We need a probability distribution across the possible next tokens.",
+  },
+  {
+    id: "loss", title: "Cross-entropy loss", category: "Training",
+    definition: "Measures how much probability the model assigns to the correct target token.",
+    code: "F.cross_entropy(logits, targets)", output: "single loss value",
+    steps: ["Compares logits with correct class IDs.", "Penalizes confident wrong predictions.", "Averages examples into a training signal."],
+    question: "What direction should training loss generally move?", options: ["Down", "Always up", "It must stay exactly one"], answer: 0,
+    explanation: "A decreasing loss usually means predictions are becoming better on the training objective.",
+  },
+  {
+    id: "backprop", title: "Backpropagation", category: "Training",
+    definition: "Computes how each learnable parameter contributed to the loss.",
+    code: "loss.backward()", output: "parameter gradients",
+    steps: ["Starts from the loss.", "Applies the chain rule backward through operations.", "Stores gradients on learnable parameters."],
+    question: "What does loss.backward() calculate?", options: ["Gradients", "Token strings", "Pull requests"], answer: 0,
+    explanation: "Backpropagation calculates derivatives needed for the optimizer's parameter update.",
+  },
+  {
+    id: "optimizer", title: "Optimizer", category: "Training",
+    definition: "Updates model parameters using their gradients.",
+    code: "optimizer.step()", output: "updated parameters",
+    steps: ["Reads parameter gradients.", "Applies an update rule such as AdamW.", "Moves parameters toward lower loss."],
+    question: "What should happen before optimizer.step()?", options: ["loss.backward()", "decode()", "git push"], answer: 0,
+    explanation: "The optimizer needs gradients computed by backpropagation before it can update parameters.",
+  },
+  {
+    id: "learning-rate", title: "Learning rate", category: "Training",
+    definition: "Controls the size of each optimizer update.",
+    code: "torch.optim.AdamW(params, lr=3e-4)", output: "step size: 0.0003",
+    steps: ["Scales parameter updates.", "Too large may make training unstable.", "Too small may make learning very slow."],
+    question: "What does 3e-4 mean?", options: ["0.0003", "3,000", "3 tokens"], answer: 0,
+    explanation: "Scientific notation 3e-4 means 3 × 10⁻⁴, which equals 0.0003.",
+  },
+  {
+    id: "epoch-batch", title: "Epoch and batch", category: "Training",
+    definition: "A batch is one data subset; an epoch is one pass over the full training dataset.",
+    code: "for epoch in range(epochs):\n    for batch in loader: ...", output: "repeated training steps",
+    steps: ["Splits data into manageable batches.", "Updates parameters after each batch.", "Completes an epoch after using all batches."],
+    question: "Which is normally smaller: a batch or the full dataset?", options: ["A batch", "The full dataset", "They must match"], answer: 0,
+    explanation: "Mini-batches make training practical and provide repeated gradient estimates.",
+  },
+  {
+    id: "query-key-value", title: "Query, Key, Value", category: "Attention",
+    definition: "Three learned projections used to retrieve relevant information from a sequence.",
+    code: "Q = x @ Wq; K = x @ Wk; V = x @ Wv", output: "attention inputs",
+    steps: ["Queries describe what each position seeks.", "Keys describe what positions offer.", "Values contain information to combine."],
+    question: "Which vectors are combined using attention weights?", options: ["Values", "Only queries", "Token IDs directly"], answer: 0,
+    explanation: "Query-key similarity produces weights, and those weights form a weighted sum of values.",
+  },
+  {
+    id: "scaled-dot-attention", title: "Scaled dot-product attention", category: "Attention",
+    definition: "Scores query-key similarity and uses it to mix value vectors.",
+    code: "softmax(Q @ K.T / sqrt(d_k)) @ V", output: "context-aware vectors",
+    steps: ["Computes query-key dot products.", "Scales and normalizes scores.", "Uses probabilities to combine values."],
+    question: "Why divide attention scores by sqrt(d_k)?", options: ["To stabilize their scale", "To sort tokens", "To remove the batch"], answer: 0,
+    explanation: "Scaling prevents large dot products from pushing softmax into extremely saturated probabilities.",
+  },
+  {
+    id: "causal-mask", title: "Causal mask", category: "Attention",
+    definition: "Prevents a position from attending to future tokens during next-token prediction.",
+    code: "scores.masked_fill(mask == 0, -inf)", output: "future attention probability: 0",
+    steps: ["Marks future positions as forbidden.", "Sets their pre-softmax scores extremely low.", "Preserves autoregressive prediction."],
+    question: "Why must a training token not see future targets?", options: ["It would leak the answer", "It would reduce vocabulary size", "It would disable Git"], answer: 0,
+    explanation: "Future-token access would let the model cheat instead of learning next-token prediction.",
+  },
+  {
+    id: "multi-head", title: "Multi-head attention", category: "Attention",
+    definition: "Runs several attention projections in parallel and combines their results.",
+    code: "MultiheadAttention(d_model, num_heads)", output: "concatenated attention heads",
+    steps: ["Splits representation capacity across heads.", "Each head can learn different relationships.", "Projects combined head outputs back to d_model."],
+    question: "What can different attention heads learn?", options: ["Different token relationships", "Different Git passwords", "Only identical patterns"], answer: 0,
+    explanation: "Multiple heads provide separate learned subspaces for attending to different patterns.",
+  },
+  {
+    id: "positional-encoding", title: "Positional encoding", category: "Transformers",
+    definition: "Adds token-order information that attention alone does not contain.",
+    code: "x = token_embedding + position_embedding", output: "order-aware representations",
+    steps: ["Creates a representation for each position.", "Combines it with token embeddings.", "Lets the model distinguish reordered sequences."],
+    question: "Why does a transformer need position information?", options: ["Attention is otherwise order-agnostic", "Softmax deletes text", "Pytest requires it"], answer: 0,
+    explanation: "Self-attention compares items without inherently knowing their sequence order.",
+  },
+  {
+    id: "residual", title: "Residual connection", category: "Transformers",
+    definition: "Adds a block's input back to its transformed output.",
+    code: "x = x + attention(x)", output: "residual stream",
+    steps: ["Keeps a direct information path.", "Adds the learned transformation.", "Helps gradients flow through deep networks."],
+    question: "What operator commonly forms a residual connection?", options: ["Addition", "String join", "Dictionary lookup"], answer: 0,
+    explanation: "The original representation and block output are combined elementwise by addition.",
+  },
+  {
+    id: "layer-norm", title: "Layer normalization", category: "Transformers",
+    definition: "Normalizes features within each token representation for stable training.",
+    code: "nn.LayerNorm(d_model)(x)", output: "normalized features",
+    steps: ["Computes statistics across features.", "Normalizes each representation.", "Applies learned scale and shift."],
+    question: "What is the main purpose of layer normalization?", options: ["Training stability", "Vocabulary sorting", "Branch creation"], answer: 0,
+    explanation: "Layer normalization helps control activation scale through deep transformer blocks.",
+  },
+  {
+    id: "transformer-block", title: "Transformer block", category: "Transformers",
+    definition: "A repeated module combining attention, a feed-forward network, normalization, and residual paths.",
+    code: "x = block(x)", output: "contextual token representations",
+    steps: ["Attention exchanges sequence information.", "The MLP transforms each position.", "Residuals and normalization stabilize depth."],
+    question: "Which component mixes information between token positions?", options: ["Self-attention", "The tokenizer", "Git"], answer: 0,
+    explanation: "Attention communicates across positions; the feed-forward network operates position by position.",
+  },
+  {
+    id: "temperature", title: "Temperature", category: "Inference",
+    definition: "Controls how sharp or varied the next-token probability distribution is.",
+    code: "probs = softmax(logits / temperature)", output: "adjusted probabilities",
+    steps: ["Lower values sharpen preferences.", "Higher values flatten probabilities.", "Sampling uses the adjusted distribution."],
+    question: "What usually happens with a lower temperature?", options: ["Output becomes more predictable", "Vocabulary grows", "Gradients increase"], answer: 0,
+    explanation: "Lower temperature concentrates probability on the model's highest-scoring tokens.",
+  },
+  {
+    id: "top-k", title: "Top-k sampling", category: "Inference",
+    definition: "Samples the next token only from the k highest-probability candidates.",
+    code: "top_values, top_ids = probs.topk(k)", output: "restricted candidates",
+    steps: ["Ranks token probabilities.", "Keeps the best k candidates.", "Samples after renormalizing that subset."],
+    question: "What does k control?", options: ["How many candidates remain", "Embedding dimension", "Number of epochs"], answer: 0,
+    explanation: "Top-k excludes the long tail of low-probability tokens before sampling.",
+  },
+  {
+    id: "checkpoint", title: "Checkpoint", category: "Training",
+    definition: "A saved snapshot of model and often optimizer state.",
+    code: 'torch.save(model.state_dict(), "model.pt")', output: "model.pt",
+    steps: ["Collects learned parameter tensors.", "Writes them to durable storage.", "Allows later loading or continued training."],
+    question: "Why save checkpoints during training?", options: ["To resume and preserve progress", "To create tokens", "To calculate shape"], answer: 0,
+    explanation: "Checkpoints protect expensive training progress and make models reusable.",
+  },
+  {
+    id: "rag", title: "RAG", category: "RAG",
+    definition: "Retrieval-Augmented Generation supplies an LLM with relevant external information before answering.",
+    code: "documents = retrieve(query)\nanswer = generate(query, documents)", output: "grounded response",
+    steps: ["Searches an external knowledge source.", "Selects relevant chunks.", "Places evidence into the model context."],
+    question: "What does retrieval add to generation?", options: ["Relevant external context", "New model parameters", "A larger GPU"], answer: 0,
+    explanation: "RAG grounds an answer in retrieved material without retraining the base model.",
+  },
+  {
+    id: "chunking", title: "Chunking", category: "RAG",
+    definition: "Splits documents into retrievable passages that fit the embedding and context workflow.",
+    code: "chunks = split(document, chunk_size=500)", output: "list of passages",
+    steps: ["Breaks long documents into sections.", "Often overlaps neighboring sections.", "Stores each chunk for retrieval."],
+    question: "Why can chunks include overlap?", options: ["To preserve context across boundaries", "To duplicate every document", "To train token IDs"], answer: 0,
+    explanation: "Overlap reduces the chance that important meaning is split cleanly between two chunks.",
+  },
+  {
+    id: "vector-search", title: "Vector search", category: "RAG",
+    definition: "Finds stored embeddings that are most similar to a query embedding.",
+    code: "results = index.search(query_embedding, k=5)", output: "five relevant chunks",
+    steps: ["Embeds the user's query.", "Compares it with stored vectors.", "Returns the closest document chunks."],
+    question: "What does vector search compare?", options: ["Embedding vectors", "Git branches", "Python filenames"], answer: 0,
+    explanation: "Semantic retrieval ranks vector representations using a similarity measure.",
+  },
+  {
+    id: "agent", title: "Agent", category: "Agents",
+    definition: "An LLM-driven system that chooses actions, uses tools, and continues toward a goal.",
+    code: "while not done:\n    action = model(state)\n    state = tool(action)", output: "goal-directed loop",
+    steps: ["Observes the current state.", "Selects a next action or response.", "Uses results to decide what happens next."],
+    question: "What distinguishes an agent from one text-generation call?", options: ["A multi-step action loop", "A larger tokenizer", "A Git branch"], answer: 0,
+    explanation: "Agents use model decisions and external results across multiple steps toward an objective.",
+  },
+  {
+    id: "tool-calling", title: "Tool calling", category: "Agents",
+    definition: "Lets a model request a structured function or external capability.",
+    code: '{"tool": "weather", "location": "Seattle"}', output: "structured tool request",
+    steps: ["The model selects a permitted tool.", "It supplies schema-valid arguments.", "Application code executes and returns the result."],
+    question: "Who actually executes a tool call?", options: ["The surrounding application", "The token ID", "The attention head"], answer: 0,
+    explanation: "The model proposes structured calls; trusted application code validates and performs them.",
+  },
+  {
+    id: "system-prompt", title: "System prompt", category: "Agents",
+    definition: "High-priority instructions defining an assistant's role, boundaries, and behavior.",
+    code: 'system = "You are a careful coding tutor."', output: "behavioral instructions",
+    steps: ["Defines purpose and constraints.", "Provides stable operating context.", "Does not replace application-level security."],
+    question: "Should a system prompt be the only security control?", options: ["No", "Yes", "Only for RAG"], answer: 0,
+    explanation: "Permissions, validation, and sandboxing must be enforced by code outside the model.",
+  },
+  {
+    id: "memory", title: "Agent memory", category: "Agents",
+    definition: "Stored information an agent can retrieve across steps or conversations.",
+    code: "memory.save({\"preference\": \"concise\"})", output: "persistent context",
+    steps: ["Selects information worth storing.", "Writes it to controlled storage.", "Retrieves relevant memories later."],
+    question: "Should an agent store every piece of user data?", options: ["No", "Always", "Only numbers"], answer: 0,
+    explanation: "Memory should be purposeful, permission-aware, minimal, and protected.",
+  },
+  {
+    id: "evaluation", title: "Evaluation", category: "Agents",
+    definition: "A repeatable measurement of model or agent quality on representative tasks.",
+    code: "score = evaluate(agent, test_cases)", output: "quality metrics and failures",
+    steps: ["Defines expected behavior.", "Runs stable test cases.", "Measures results and investigates failures."],
+    question: "Why are agent evaluations important?", options: ["Behavior is probabilistic and can regress", "They increase token IDs", "They replace source control"], answer: 0,
+    explanation: "Evaluations reveal quality changes that ordinary deterministic unit tests may miss.",
+  },
+];
+
+export const concepts: Concept[] = [...foundationConcepts, ...advancedConcepts];
+
+export const categories: Category[] = Array.from(new Set(concepts.map(({ category }) => category)));
