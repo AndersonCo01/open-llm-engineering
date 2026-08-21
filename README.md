@@ -40,7 +40,7 @@ ruff check .
 - [x] Day 1 — Tensors, environments, and Git
 - [x] Day 2 — Tokenization
 - [x] Day 3 — Neural networks and language modeling
-- [ ] Day 4 — Embeddings and context
+- [x] Day 4 — Embeddings and context
 - [ ] Day 5 — Attention
 - [ ] Day 6 — Miniature GPT
 - [ ] Day 7 — Evaluation and first release
