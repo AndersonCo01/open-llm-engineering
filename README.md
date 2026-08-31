@@ -43,7 +43,7 @@ ruff check .
 - [x] Day 4 — Embeddings and context
 - [x] Day 5 — Attention
 - [x] Day 6 — Miniature GPT
-- [ ] Day 7 — Evaluation and first release
+- [x] Day 7 — Evaluation and first release
 - [ ] Days 8–14 — Open models, RAG, agents, safety, and capstone
 
 ## License
